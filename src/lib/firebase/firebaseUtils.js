@@ -1,36 +1,9 @@
 
-import {doc,collection, getDoc, setDoc, updateDoc, addDoc} from 'firebase/firestore'
+import {doc,collection, getDoc, getDocs, setDoc, updateDoc, addDoc, deleteDoc} from 'firebase/firestore'
 import {auth, db} from './firebase.js'
+import products from "../../productsStore.js";
+import categorize from "../functions/categorize.js";
 
-import {v4 as uuid} from "uuid";
-
-
-// async function saveProduct(newProduct={
-//     id: uuid(),
-//     name: "Packard PC",
-//     quantity: 5
-// }) {
-//     try {
-//         const userRef = doc(db, 'users', "cK1eAjOWhWF2f90OApTU");
-//
-//         // current data
-//         const userSnapshot = await getDoc(userRef);
-//         if (userSnapshot.exists()) {
-//             const userData = userSnapshot.data();
-//
-//             // update 'products' array
-//             if (!userData.products) {
-//                 userData.products = []; // Initialize the array if it doesn't exist
-//             }
-//             userData.products.push(newProduct);
-//
-//             // Update the document with the modified data
-//             await updateDoc(userRef, userData);
-//         }
-//     } catch (e) {
-//         console.log(e);
-//     }
-// }
 
 async function saveProduct(newProduct = {
     name: "Product name",
@@ -41,22 +14,28 @@ async function saveProduct(newProduct = {
     quantity: 0
 }) {
     try {
-        const userRef = doc(db, 'users', "cK1eAjOWhWF2f90OApTU");
-
-        // Create a reference to the 'products' subcollection
+        const userRef = doc(db, 'users', "YusjvqFDaeE4kamEpIdr");
         const productsCollectionRef = collection(userRef, 'products');
-
-        // Add the new product as a document within the 'products' subcollection
         await addDoc(productsCollectionRef, newProduct);
+        console.log("chawwing:::")
+        products.update(async ()=>{
+            let productList = await categorize(await getProducts());
+            return  productList || {
+                home: [],
+                pharma: [],
+                electronics: [],
+                stationary: []
+            };
+        });
     } catch (e) {
         console.error("Error adding product:", e);
     }
-}
 
+}
 
 async function updateProduct(docId,updatedData) {
     try {
-        const userRef = doc(db, 'users', "cK1eAjOWhWF2f90OApTU"); // user document reference
+        const userRef = doc(db, 'users', "YusjvqFDaeE4kamEpIdr"); // user document reference
         const productsCollectionRef = collection(userRef, 'products'); //sub collection reference
         const toUpdateRef = doc(productsCollectionRef, docId); // prodcut reference
 
@@ -68,32 +47,50 @@ async function updateProduct(docId,updatedData) {
 
 
 async function getProducts() {
-    // TODO: update so that it fetches all the docs in products sub-collection
     try {
-        const userRef = doc(db, 'users', "cK1eAjOWhWF2f90OApTU");
+        const userRef = doc(db, 'users', 'YusjvqFDaeE4kamEpIdr');
 
-        // current data
-        const userSnapshot = await getDoc(userRef);
-        if (userSnapshot.exists()) {
-            const userData = userSnapshot.data();
+        // Reference to the 'products' sub-collection
+        const productsCollectionRef = collection(userRef, 'products');
 
-            // update 'products' array
-            if (!userData.products) {
-                userData.products = []; // Initialize the array if it doesn't exist
-            }
-            return userData.products;
-        }
+        // Query to get all documents in the 'products' sub-collection
+        const querySnapshot = await getDocs(productsCollectionRef);
+
+        // Extract the data from each document
+        const products = [];
+
+        querySnapshot.forEach((doc) => {
+            products.push({id:doc.id,...doc.data()});
+        });
+
+        return products;
     } catch (e) {
-        console.log(e);
+        console.error(e);
+    }
+}
+async function getProductById(productId){
+    try {
+        const userRef = doc(db, 'users', "YusjvqFDaeE4kamEpIdr"); // user document reference
+        const productsCollectionRef = collection(userRef, 'products'); //sub collection reference
+        const productToFetch = doc(productsCollectionRef, productId); // prodcut reference
+        const fetched = await getDoc(productToFetch)
+        return {id: fetched.id, ...fetched.data()};
+    } catch (e) {
+        console.error("Error updating product:", e);
     }
 }
 
-async function getProductById(productId){
 
+async function deleteProductById(productId){
+    try {
+        const userRef = doc(db, 'users', "YusjvqFDaeE4kamEpIdr"); // user document reference
+        const productsCollectionRef = collection(userRef, 'products'); //sub collection reference
+        const productToDelete = doc(productsCollectionRef, productId); // prodcut reference
+        await deleteDoc(productToDelete)
+    } catch (e) {
+        console.error("Error updating product:", e);
+    }
 }
-
-
-
 // async function saveTodos(){
 //     try{
 //         const userRef = doc(db, 'user', $authStore.user.uid);
@@ -110,6 +107,9 @@ async function getProductById(productId){
 
 export {
     saveProduct,
-    getProducts
+    getProducts,
+    getProductById,
+    updateProduct,
+    deleteProductById
 }
 

@@ -1,21 +1,35 @@
 <script>
 import {saveProduct, getProducts} from "../lib/firebase/firebaseUtils.js"
+import categorize from "../lib/functions/categorize.js";
+import products from "../productsStore.js";
 import {onMount} from "svelte";
 import {fade} from "svelte/transition"
+
 import NewProductForm from "../components/NewProductForm.svelte";
 import ProductCard from "../components/ProductCard.svelte";
 import CategoriesLinks from "../components/CategoriesLinks.svelte";
 import FilterButtons from "../components/FilterButtons.svelte";
 import EditProductForm from "../components/EditProductForm.svelte";
+
+import filterByName from "../lib/functions/filterByName.js";
 // saveProduct();
 
 
 let editingProduct = false;
 let productToEdit = "";
+let productsList = $products|| {
+    home: [],
+    pharma: [],
+    electronics: [],
+    stationary: []
+};
+
+$:{
+ console.log(productsList)
+}
 
 onMount(async ()=>{
-    // let myProdcuts = await getProducts();
-    // console.log("👉",myProdcuts)
+    productsList = categorize(await getProducts());
 })
 
 async function editProduct({detail}){
@@ -33,7 +47,7 @@ async function closeEditScreen(){
 <svelte:head>
     <title>Product Manager</title>
 </svelte:head>
-
+{JSON.stringify(productsList)}
 {#if editingProduct}
     <div class="overlay" on:click|self={closeEditScreen} transition:fade>
         <div class="section editproduct">
@@ -67,32 +81,46 @@ async function closeEditScreen(){
                     <FilterButtons />
                 </div>
                 <div class="productList">
-                    <div class="section home" id="home">
-                        <p class="sectionHeader">
-                            Home
-                        </p>
-                        {#each [1,2,3,4,5,6,7] as item, idx (item)}
-                            <ProductCard on:editProduct={editProduct} item={item}/>
-                        {/each}
-                    </div>
-                    <div class="section electronics">
-                        <p class="sectionHeader">
-                            Electronics
-                        </p>
-                        phone and pc
-                    </div>
+                    {#if productsList.home.length > 0}
+                        <div class="section home" id="home">
+                            <p class="sectionHeader">
+                                Home
+                            </p>
+                            {#each productsList.home as item, idx (item)}
+                                <ProductCard on:editProduct={editProduct} item={item}/>
+                            {/each}
+                        </div>
+                        {/if}
+                    {#if productsList.electronics.length > 0}
+                        <div class="section electronics">
+                            <p class="sectionHeader">
+                                Electronics
+                            </p>
+                            {#each productsList.electronics as item, idx (item)}
+                                <ProductCard on:editProduct={editProduct} item={item}/>
+                            {/each}
+                        </div>
+                    {/if}
+                    {#if productsList.pharma.length > 0}
                     <div class="section pharma">
                         <p class="sectionHeader">
                             Pharma
                         </p>
-                        drugs and cosmo
+                        {#each productsList.pharma as item, idx (item)}
+                            <ProductCard on:editProduct={editProduct} item={item}/>
+                        {/each}
                     </div>
+                        {/if}
+                    {#if productsList.stationary.length > 0}
                     <div class="section stationary">
                         <p class="sectionHeader">
                             Stationary
                         </p>
-                        pen pencil
+                        {#each productsList.stationary as item, idx (item)}
+                            <ProductCard on:editProduct={editProduct} item={item}/>
+                        {/each}
                     </div>
+                        {/if}
                 </div>
         </div>
 

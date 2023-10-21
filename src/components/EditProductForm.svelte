@@ -88,7 +88,7 @@
     }
 
 
-    .inputRow label{
+    .row label{
         display: flex;
         flex-direction: row;
         gap: 0.3rem;

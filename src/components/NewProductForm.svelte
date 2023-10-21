@@ -1,24 +1,37 @@
 <script>
+    import {saveProduct} from "../lib/firebase/firebaseUtils.js";
+    import moment from 'moment';
+
+
+    const now = moment();
+    const formattedDate = now.format('YYYY-MM-DD');
+
     let newProduct = {
         name:"",
         description: "",
-        quantity: 0
+        quantity: 0,
+        price:0,
+        category: "",
+        lastUpdate: formattedDate
     }
-    console.log(newProduct.name.length > 0)
-</script>
 
+</script>
 
 <div class="card">
     <form action=""
-    on:submit|preventDefault={(e)=>{
-        console.log("submitting form")
+    on:submit|preventDefault={async (e)=>{
+        if(newProduct.name !== "" && newProduct.description !== "" && newProduct.quantity !== 0 && newProduct.price !== 0 && newProduct.category !== ""){
+            await saveProduct(newProduct);
+        }else{
+            alert("Can't leave a blank input field!")
+        }
+
     }}
     >
         <label for="productName">
             <span
                     class:hide={newProduct.name.length <= 0}
             >Product Name</span>
-
             <input type="text" name="productName" id="productName" placeholder="Product name" bind:value={newProduct.name}>
         </label>
 
@@ -37,22 +50,22 @@
         <div class="row">
             <label for="price">
                 <span>Price</span>
-                <input type="number" name="price" id="price">
+                <input type="number" name="price" id="price" bind:value={newProduct.price}>
             </label>
             <label for="price">
                 <span>Category</span>
-                <select name="category" id="category" >
+                <select name="category" id="category" bind:value={newProduct.category} >
                     <option value=""></option>
                     <option value="home">Home</option>
-                    <option value="Electronics">Electronics</option>
+                    <option value="electronics">Electronics</option>
                     <option value="pharma">Pharma</option>
                     <option value="stationary">Stationary</option>
                 </select>
             </label>
 
-            <label for="stock">
-                <span>Stock</span>
-                <input type="number" name="stock" id="stock">
+            <label for="quantity">
+                <span>Quantity</span>
+                <input type="number" name="quantity" id="quantity" bind:value={newProduct.quantity}>
             </label>
         </div>
         <button type="submit">Save</button>
@@ -88,7 +101,7 @@ textarea{
 }
 
 
-.inputRow label{
+.row label{
     display: flex;
     flex-direction: row;
     gap: 0.3rem;

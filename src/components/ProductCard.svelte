@@ -4,7 +4,7 @@
     let dispatch = createEventDispatcher();
     export let item;
     let product = {
-        id:"ldkjsldk9409",
+        id:"Dummy Data",
         price: 20.45,
         quantity: 12,
         lastUpdate: Date.now()
@@ -22,21 +22,19 @@
 </script>
 
     <div class="card">
-        <h2>Product name</h2>
-        <p>The height CSS property specifies the height of an element. By default,
-            the property defines the height of. By default, the property defines the height of.
-        </p>
+        <h2>{item.name}</h2>
+        <p>{item.description}</p>
         <div class="row">
         <span>
-            <b>Quantity:</b>{product.quantity}
+            <b>Quantity:</b> {item.quantity}
         </span>
             <span>
-                <b>Price: </b> ${product.price}
+                <b>Price:</b> ${item.price}
         </span>
         </div>
         <footer>
             <div>
-                Last Updated: {product.lastUpdate}
+                Last Updated: {item.lastUpdate || 0}
             </div>
             <div>
                 <i

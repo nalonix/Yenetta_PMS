@@ -68,7 +68,7 @@ padding: 0.2rem 1rem;
 .row{
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: space-around;
     gap: 1rem;
 }
 .container{
