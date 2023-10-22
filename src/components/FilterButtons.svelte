@@ -1,13 +1,19 @@
+<script>
+    import filterByQuantity from "../lib/functions/filterByQuantity.js";
+    import {createEventDispatcher} from "svelte";
+
+    const dispatch = createEventDispatcher();
+
+</script>
+
 <div class="filter">
+    <button on:click={()=>{ dispatch("reloadData")}}>All</button>
     <button on:click={()=>{
-                            console.log("All")
-                        }}>All</button>
-    <button on:click={()=>{
-                            console.log("In stock")
+                           dispatch("filter", "In Stock")
                         }}>In Stock</button>
     <button
             on:click={()=>{
-                                console.log("Out of stock")
+                               dispatch("filter","Out Of Stock")
                             }}
     >Out Of Stock</button>
 </div>

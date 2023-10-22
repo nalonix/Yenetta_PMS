@@ -1,5 +1,6 @@
 <script>
     import {createEventDispatcher} from "svelte";
+    import {getProductById, deleteProductById} from "../lib/firebase/firebaseUtils.js";
 
     let dispatch = createEventDispatcher();
     export let item;
@@ -11,13 +12,14 @@
     }
 
     async function handleDelete(){
-        console.log("Handling delete")
+        await deleteProductById(item.id);
+        dispatch("reloadData");
     }
 
     async function handleEdit(){
-        dispatch("editProduct",{productId: product.id});
+        let productDetails = await getProductById(item.id);
+        dispatch("editProduct",{productDetails});
     }
-
 
 </script>
 

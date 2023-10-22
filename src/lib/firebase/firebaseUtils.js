@@ -17,7 +17,6 @@ async function saveProduct(newProduct = {
         const userRef = doc(db, 'users', "YusjvqFDaeE4kamEpIdr");
         const productsCollectionRef = collection(userRef, 'products');
         await addDoc(productsCollectionRef, newProduct);
-        console.log("chawwing:::")
         products.update(async ()=>{
             let productList = await categorize(await getProducts());
             return  productList || {
@@ -26,6 +25,9 @@ async function saveProduct(newProduct = {
                 electronics: [],
                 stationary: []
             };
+        });
+        products.set(async data=>{
+            return "Horoscope"
         });
     } catch (e) {
         console.error("Error adding product:", e);
@@ -73,7 +75,7 @@ async function getProductById(productId){
         const userRef = doc(db, 'users', "YusjvqFDaeE4kamEpIdr"); // user document reference
         const productsCollectionRef = collection(userRef, 'products'); //sub collection reference
         const productToFetch = doc(productsCollectionRef, productId); // prodcut reference
-        const fetched = await getDoc(productToFetch)
+        const fetched = await getDoc(productToFetch);
         return {id: fetched.id, ...fetched.data()};
     } catch (e) {
         console.error("Error updating product:", e);
@@ -82,6 +84,7 @@ async function getProductById(productId){
 
 
 async function deleteProductById(productId){
+    console.log(productId)
     try {
         const userRef = doc(db, 'users', "YusjvqFDaeE4kamEpIdr"); // user document reference
         const productsCollectionRef = collection(userRef, 'products'); //sub collection reference

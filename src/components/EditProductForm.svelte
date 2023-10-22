@@ -1,21 +1,35 @@
 <script>
 
-    export let item;
+
+    import {updateProduct} from "../lib/firebase/firebaseUtils.js";
+    import moment from "moment/moment.js";
+    import {createEventDispatcher} from "svelte";
+
+
+    const now = moment();
+    const formattedDate = now.format('YYYY-MM-DD');
+
     export let ProductData = {
-        name: 'my name',
-        description:"this is the product date",
-        price: 30,
-        quantity: 2,
-        category: "kd"
+        id: "",
+        name: '',
+        description:"",
+        price: 0,
+        quantity: 0,
+        category: "",
+        lastUpdate: formattedDate
     }
 
-    console.log(item)
+    let dispatch = createEventDispatcher();
+
+
+
 </script>
 
 <div class="card">
     <form action=""
-          on:submit|preventDefault={(e)=>{
-        console.log("updating product form")
+          on:submit|preventDefault={async (e)=>{
+            await updateProduct(ProductData.id, ProductData)
+            dispatch("reloadData")
     }}
     >
         <label for="productName">
@@ -40,10 +54,10 @@
             </label>
             <label for="price">
                 <span>Category</span>
-                <select name="category" id="category" >
+                <select name="category" id="category" bind:value={ProductData.category} >
                     <option value=""></option>
                     <option value="home">Home</option>
-                    <option value="Electronics">Electronics</option>
+                    <option value="electronics">Electronics</option>
                     <option value="pharma">Pharma</option>
                     <option value="stationary">Stationary</option>
                 </select>
@@ -63,7 +77,6 @@
     .card{
         width: 30rem;
         flex-grow: 1;
-        background: white;
     }
     label{
         display: flex;

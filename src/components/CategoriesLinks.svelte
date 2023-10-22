@@ -1,8 +1,8 @@
 <div class="categories">
-    <a href="#home" class="chip">Home</a>
-    <a href="#" class="chip">Electronics</a>
-    <a href="#" class="chip">Pharama</a>
-    <a href="#" class="chip">Stationary</a>
+    <a href="#home" class="chip home">Home</a>
+    <a href="#electronics" class="chip electronics">Electronics</a>
+    <a href="#pharma" class="chip pharma">Pharama</a>
+    <a href="#stationary" class="chip stationary">Stationary</a>
 </div>
 
 <style>

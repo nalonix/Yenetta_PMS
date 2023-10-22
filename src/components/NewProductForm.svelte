@@ -1,7 +1,13 @@
 <script>
-    import {saveProduct} from "../lib/firebase/firebaseUtils.js";
+    import products from "../productsStore.js";
+    import {getProducts, saveProduct} from "../lib/firebase/firebaseUtils.js";
     import moment from 'moment';
+    import categorize from "../lib/functions/categorize.js";
+    import {createEventDispatcher} from "svelte";
 
+
+
+    let dispatch = createEventDispatcher();
 
     const now = moment();
     const formattedDate = now.format('YYYY-MM-DD');
@@ -22,6 +28,7 @@
     on:submit|preventDefault={async (e)=>{
         if(newProduct.name !== "" && newProduct.description !== "" && newProduct.quantity !== 0 && newProduct.price !== 0 && newProduct.category !== ""){
             await saveProduct(newProduct);
+            dispatch("reloadData");
         }else{
             alert("Can't leave a blank input field!")
         }
@@ -29,21 +36,16 @@
     }}
     >
         <label for="productName">
-            <span
-                    class:hide={newProduct.name.length <= 0}
-            >Product Name</span>
-            <input type="text" name="productName" id="productName" placeholder="Product name" bind:value={newProduct.name}>
+            <span>Product Name</span>
+            <input type="text" name="productName" id="productName" bind:value={newProduct.name}>
         </label>
 
         <label for="productDescription">
-            <span
-                    class:hide={newProduct.description.length <= 0}
-            >Product Description</span>
+            <span>Product Description</span>
 
             <textarea name="productDescription"
                       id="productDescription"
                       maxlength="170"
-                      placeholder="Product description"
                       bind:value={newProduct.description}></textarea>
             <span>{newProduct.description.length}/170</span>
         </label>
@@ -90,15 +92,7 @@ span{
     transition-duration: 1s;
 }
 
-textarea{
-    min-height:5rem;
-    height: fit-content;
-    padding: 0.4rem;
-    resize: none;
-    font-family: inherit;
-    font-size: 1rem;
-    font-weight: lighter;
-}
+
 
 
 .row label{
