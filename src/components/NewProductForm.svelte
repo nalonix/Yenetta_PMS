@@ -118,5 +118,12 @@ select{
 button[type="submit"]{
     align-self: end;
 }
+
+@media screen and (max-width: 1200px) {
+    .row{
+        flex-direction: column;
+    }
+}
+
 </style>
 

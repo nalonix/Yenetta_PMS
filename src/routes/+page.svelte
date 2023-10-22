@@ -188,6 +188,13 @@ async function handleReload(){
 
 
 
+    @media screen and (max-width: 1300px) {
+        .main{
+            width: 90%;
+        }
+    }
+
+
     @media screen and (max-width: 900px) {
         .main{
             width: 90%;
