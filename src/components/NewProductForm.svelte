@@ -28,6 +28,14 @@
     on:submit|preventDefault={async (e)=>{
         if(newProduct.name !== "" && newProduct.description !== "" && newProduct.quantity !== 0 && newProduct.price !== 0 && newProduct.category !== ""){
             await saveProduct(newProduct);
+            newProduct = {
+        name:"",
+        description: "",
+        quantity: 0,
+        price:0,
+        category: "",
+        lastUpdate: formattedDate
+    }
             dispatch("reloadData");
         }else{
             alert("Can't leave a blank input field!")
